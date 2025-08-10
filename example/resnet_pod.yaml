@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: resnet-example-pod
+spec:
+  hostNetwork: true
+  restartPolicy: Never
+  containers:
+  - name: resnet-hook-example-container
+    image:  kontonpuku666/mlperf-resnet:pytorch-test
+    env:
+    - name: GPU_CLIENT_PORT
+      value: "58001"
+    - name: GPU_CLIENT_NAME
+      value: "client1"
+    - name: LD_PRELOAD
+      value: "/fastpod/library/libfast.so.1"
+    ports:
+    - containerPort: 58001
+      hostPort: 58001
+    volumeMounts:
+    - name: host-config-volume
+      mountPath: /fastpod
+    - name: host-models-volume
+      mountPath: /models/resnet
+  volumes:
+  - name: host-config-volume
+    hostPath:
+      path: /home/ubuntu/konton_ws/git_repo/FaST-Manager/src/test/pod_config
+  - name: host-models-volume
+    hostPath:
+      path: /home/ubuntu/konton_ws/git_repo/FaST-Manager/src/test/models
+      
